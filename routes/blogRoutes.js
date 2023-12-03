@@ -9,15 +9,14 @@ router.post('/:id/comments', async (req,res) => {
             return res.status(404).json({ message: 'Blog not found' });
          } 
 
-         blog.comments = blog.comments || [];
-
          const comment = {
-            // author: req.body.author,
             text: req.body.text,
          };
 
-         console.log('Adding comment:', comment);
-         blog.comments.push(comment);
+         blog.comment = blog.comment || []
+
+
+         blog.comment.push(comment);
          await blog.save();
 
          console.log('Saved blog with comment:', blog); 
@@ -30,17 +29,17 @@ router.post('/:id/comments', async (req,res) => {
 });
 
 
-router.get('/:id/comments', async(req, res) => {
-    try {
-        const blog = await Blog.findById(req.params.id);
-        if(!blog) {
-            return res.status(404).json({ message: 'Blog not found' })
-        }
-        res.status(200).json(blog.coments | []);
-    } catch(error) {
-        res.status(500).json({ message: error.message});
-    }
-});
+// router.get('/:id/comments', async(req, res) => {
+//     try {
+//         const blog = await Blog.findById(req.params.id);
+//         if(!blog) {
+//             return res.status(404).json({ message: 'Blog not found' })
+//         }
+//         res.status(200).json(blog.coments | []);
+//     } catch(error) {
+//         res.status(500).json({ message: error.message});
+//     }
+// });
 
 
 router.get('/', async(req, res) => {
