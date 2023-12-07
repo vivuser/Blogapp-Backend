@@ -7,6 +7,15 @@ const nodemon = require('nodemon')
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const corsOptions = {
+    origin: 'http://localhost:3000', 
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use(bodyParser.json());
+
 process.env.MONGO_URL = "mongodb+srv://vivekchamyal41:GRclebrT7OHdElnl@cluster0.ci8ozww.mongodb.net/"
 
 async function main() {
@@ -20,17 +29,17 @@ async function main() {
 
 main()
 
-const corsOptions = {
-    origin: 'http://localhost:3000', 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
-};
-app.use(cors(corsOptions));
 
-app.use(bodyParser.json());
+
+
 
 const blogRoutes = require('./routes/blogRoutes');
+const authRoutes = require('./routes/auth');
+
+
 app.use('/blogs', blogRoutes);
+
+app.use('/login', authRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`)

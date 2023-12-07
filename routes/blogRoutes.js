@@ -77,7 +77,7 @@ router.post('/', async (req, res) => {
 
 })
 
-router.delete(':/id', async(req,res) => {
+router.delete('/:id', async(req,res) => {
     try {
         await Blog.findByIdAndDelete(req.params.id);
         res.json( { message: 'Blog deleted'});
