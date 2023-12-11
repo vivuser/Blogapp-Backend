@@ -52,6 +52,7 @@ router.get('/', async(req, res) => {
 });
 
 
+
 router.get('/:id', async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
@@ -64,7 +65,8 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     const blog = new Blog({
         title: req.body.title,
-        content: req.body.content
+        content: req.body.content,
+        userId: req.body.userId
     });
 
     try {
@@ -79,11 +81,19 @@ router.post('/', async (req, res) => {
 
 router.delete('/:id', async(req,res) => {
     try {
-        await Blog.findByIdAndDelete(req.params.id);
-        res.json( { message: 'Blog deleted'});
+        const blog = await Blog.findById(req.params._id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog not found' });
+        }
+        if (blog.userId !== req.userId) {
+            return res.status(403).json({ message: 'Permission denied' });
+        }
+        await blog.delete();
+        res.json({ message: 'Blog deleted' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json( { message: error.message})
     }
-})
+});
+        
 
 module.exports = router;

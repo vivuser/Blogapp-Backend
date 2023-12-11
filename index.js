@@ -20,7 +20,7 @@ process.env.MONGO_URL = "mongodb+srv://vivekchamyal41:GRclebrT7OHdElnl@cluster0.
 
 async function main() {
     try {
-    await mongoose.connect(process.env.MONGO_URL,  { useNewUrlParser: true, useUnifiedTopology: true });
+    await mongoose.connect(process.env.MONGO_URL);
     console.log('database connected')
     } catch(error) {
         console.error('Error connecting to mongodb', error)
@@ -34,12 +34,11 @@ main()
 
 
 const blogRoutes = require('./routes/blogRoutes');
-const authRoutes = require('./routes/auth');
-
+const authRoutes = require('./routes/auth')
 
 app.use('/blogs', blogRoutes);
 
-app.use('/login', authRoutes)
+app.use('/auth', authRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on ${PORT}`)
