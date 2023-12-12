@@ -53,9 +53,9 @@ router.get('/', async(req, res) => {
 
 
 
-router.get('/:id', async (req, res) => {
+router.get('/:userId', async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params.id);
+        const blog = await Blog.find({userId: req.params.userId});
         res.json(blog);
     } catch(error) {
         res.status(500).json({ message: error.message });
@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
 
 })
 
-router.delete('/:id', async(req,res) => {
+router.delete('/:userId', async(req,res) => {
     try {
         const blog = await Blog.findById(req.params._id);
         if (!blog) {
