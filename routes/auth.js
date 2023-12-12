@@ -18,7 +18,7 @@ function createUserId() {
 router.post('/signup', async (req,res) => { 
 try  {
     const userId = createUserId();
-    const { email, password, confirmPassword } = req.body;
+    const { name, email, password, confirmPassword } = req.body;
 
     const user = new User({...req.body, userId})
     var token = jwt.sign( { email:req.body.email }, privateKey, { algorithm : 'RS256' });
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
             var token = jwt.sign({ email: req.body.email}, privateKey, { algorithm: 'RS256' });
             doc.token = token;
             doc.save()
-            res.json({ email:req.body.email, token, userId: doc.userId})
+            res.json({ name: doc.name, email:req.body.email, token, userId: doc.userId})
         } else{
             res.sendStatus(401)
         }

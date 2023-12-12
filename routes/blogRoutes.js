@@ -79,7 +79,7 @@ router.post('/', async (req, res) => {
 
 })
 
-router.delete('/:userId', async(req,res) => {
+router.delete('/:_id', async(req,res) => {
     try {
         const blog = await Blog.findById(req.params._id);
         if (!blog) {
