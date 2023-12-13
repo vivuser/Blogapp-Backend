@@ -57,7 +57,7 @@ router.get('/:userId', async (req, res) => {
     try {
         const blog = await Blog.find({userId: req.params.userId});
         res.json(blog);
-    } catch(error) {
+    } catch(error) {    
         res.status(500).json({ message: error.message });
     }
 });
@@ -79,16 +79,45 @@ router.post('/', async (req, res) => {
 
 })
 
+router.put('/:_id', async(req, res) => {
+    try{
+        const blog = await Blog.findById(req.params._id);
+        if(!blog) {
+            return res.status(404).json({ message: 'Blog not found'})
+        }
+        const reqUserId = req.body.data.userId;
+
+        if (blog.userId !== reqUserId) {
+            console.log(blog.userId, reqUserId, 'editblogUserId and edit reqUserId')
+            return res.status(403).json({ message: 'Permission denied' });
+        }
+
+        const updateFields = {
+             title: req.body.title,
+             content: req.body.content,
+        }
+
+        await blog.updateOne({ $set: updateFields})
+        res.json({ message: 'Blog updated' })
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
 router.delete('/:_id', async(req,res) => {
     try {
         const blog = await Blog.findById(req.params._id);
         if (!blog) {
             return res.status(404).json({ message: 'Blog not found' });
         }
-        if (blog.userId !== req.userId) {
+        const reqUserId = req.body.userId;
+
+        if (blog.userId !== reqUserId) {
+        console.log(blog, reqUserId, 'bloguserId and reqUserId')
             return res.status(403).json({ message: 'Permission denied' });
         }
-        await blog.delete();
+        console.log(blog, 'blog....')
+        await blog.deleteOne();
         res.json({ message: 'Blog deleted' });
     } catch (error) {
         res.status(500).json( { message: error.message})
