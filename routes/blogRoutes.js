@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
+const mongoose = require('mongoose');
 
 router.post('/:id/comments', async (req,res) => {
     try{
@@ -29,18 +30,6 @@ router.post('/:id/comments', async (req,res) => {
 });
 
 
-// router.get('/:id/comments', async(req, res) => {
-//     try {
-//         const blog = await Blog.findById(req.params.id);
-//         if(!blog) {
-//             return res.status(404).json({ message: 'Blog not found' })
-//         }
-//         res.status(200).json(blog.coments | []);
-//     } catch(error) {
-//         res.status(500).json({ message: error.message});
-//     }
-// });
-
 
 router.get('/', async(req, res) => {
     try { 
@@ -51,9 +40,18 @@ router.get('/', async(req, res) => {
     }
 });
 
+router.get('/:_id', async(req, res) => {
+    try { 
+        const blogs = await Blog.find({_id: req.params._id});
+        res.json(blogs);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 
-router.get('/:userId', async (req, res) => {
+
+router.get('/user/:userId', async (req, res) => {
     try {
         const blog = await Blog.find({userId: req.params.userId});
         res.json(blog);
@@ -85,12 +83,12 @@ router.put('/:_id', async(req, res) => {
         if(!blog) {
             return res.status(404).json({ message: 'Blog not found'})
         }
-        const reqUserId = req.body.data.userId;
+        // const reqUserId = req.body.data.userId;
 
-        if (blog.userId !== reqUserId) {
-            console.log(blog.userId, reqUserId, 'editblogUserId and edit reqUserId')
-            return res.status(403).json({ message: 'Permission denied' });
-        }
+        // if (blog.userId !== reqUserId) {
+        //     console.log(blog.userId, reqUserId, 'editblogUserId and edit reqUserId')
+        //     return res.status(403).json({ message: 'Permission denied' });
+        // }
 
         const updateFields = {
              title: req.body.title,
