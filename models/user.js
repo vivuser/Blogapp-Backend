@@ -22,6 +22,7 @@ const userSchema = new Schema({
     confirmPassword: {type: String, minLength: 6, required: true},
     token: String,
     userId: {type:String},
+    topics: [{ type: String }],
 });
 
 exports.User = mongoose.model('User', userSchema);

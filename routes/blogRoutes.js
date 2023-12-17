@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
 const mongoose = require('mongoose');
+const { User } = require('../models/user');
 
 router.post('/:id/comments', async (req,res) => {
     try{
@@ -64,6 +65,7 @@ router.post('/', async (req, res) => {
     const blog = new Blog({
         title: req.body.title,
         content: req.body.content,
+        tags: req.body.tags,
         userId: req.body.userId
     });
 
@@ -83,13 +85,6 @@ router.put('/:_id', async(req, res) => {
         if(!blog) {
             return res.status(404).json({ message: 'Blog not found'})
         }
-        // const reqUserId = req.body.data.userId;
-
-        // if (blog.userId !== reqUserId) {
-        //     console.log(blog.userId, reqUserId, 'editblogUserId and edit reqUserId')
-        //     return res.status(403).json({ message: 'Permission denied' });
-        // }
-
         const updateFields = {
              title: req.body.title,
              content: req.body.content,
@@ -101,6 +96,22 @@ router.put('/:_id', async(req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
+
+//user customized selections
+router.put('/topics/:userId', async (req, res) => {
+    try {
+        const user = await User.findOne({ userId: req.params.userId })
+        console.log(user)
+        user.topics = req.body.topics
+        await user.save();
+
+        res.json({ message: 'User topics updated successfully', user: { userId: user.userId, topics: user.topics }})
+    }   catch(error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' })
+    }
+})
+
 
 router.delete('/:_id', async(req,res) => {
     try {
