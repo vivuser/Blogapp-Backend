@@ -12,7 +12,9 @@ router.post('/:id/comments', async (req,res) => {
          } 
 
          const comment = {
+            author: req.body.author,
             text: req.body.text,
+            userId: req.body.userId,
          };
 
          blog.comment = blog.comment || []
@@ -66,7 +68,8 @@ router.post('/', async (req, res) => {
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags,
-        userId: req.body.userId
+        userId: req.body.userId,
+        author: req.body.author
     });
 
     try {
