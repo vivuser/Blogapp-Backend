@@ -32,6 +32,17 @@ router.post('/:id/comments', async (req,res) => {
     }
 });
 
+router.put('/:id/comments/:commentId', async (req,res) => {
+    try {
+        const blog = await Blog.findById(req.params.postId);
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog not found'})
+        }
+
+        const commment = blog.comment.id(rew)
+    }
+})
+
 
 
 router.get('/', async(req, res) => {
