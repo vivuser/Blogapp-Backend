@@ -34,12 +34,24 @@ router.post('/:id/comments', async (req,res) => {
 
 router.put('/:id/comments/:commentId', async (req,res) => {
     try {
-        const blog = await Blog.findById(req.params.postId);
+        const blog = await Blog.findById(req.params.id);
         if (!blog) {
             return res.status(404).json({ message: 'Blog not found'})
         }
 
-        const commment = blog.comment.id(rew)
+        const comment = blog.comment.id(req.params.commentId);
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' })
+        }
+        comment.text = req.body.text || comment.text;
+
+        await blog.save()
+
+        console.log('Updated blog with comment:', blog);
+
+        res.status(200).json(blog)
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 })
 
