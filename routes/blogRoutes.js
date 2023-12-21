@@ -55,6 +55,33 @@ router.put('/:id/comments/:commentId', async (req,res) => {
     }
 })
 
+router.post('/:id/comments/:commentId/replies', async (req,res) => {
+    try {
+        const blog = await Blog.findById(req.params.id);
+        if (!blog) {
+            return res.status(404).json({ message: 'Blog not found'})
+        }
+
+        const comment = blog.comment.id(req.params.commentId);
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' })
+        }
+        comment.replies.push({
+            author: req.body.author,
+            text:req.body.text,
+            userId: req.body.userId
+        });
+
+        await blog.save()
+
+        console.log('Updated blog with comment:', blog);
+
+        res.status(200).json(blog)
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
+
 
 
 router.get('/', async(req, res) => {

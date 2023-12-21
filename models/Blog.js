@@ -5,6 +5,7 @@
     userId: { type: String, required: true },
     text:{ type: String, required:true },
     createdAt: {type: Date, default: Date.now },
+    replies: { type: Array},
    }) 
 
     const blogSchema = new mongoose.Schema({
