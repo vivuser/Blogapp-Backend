@@ -15,7 +15,8 @@
         userId: { type: String , required: true},
         createdAt: { type: Date, default: Date.now },
         tags: {type: String},
-        comment: [commentSchema]
+        comment: [commentSchema],
+        imageUrl: { type: String },
     });
 
     module.exports = mongoose.model('Blog', blogSchema);

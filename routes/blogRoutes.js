@@ -1,10 +1,14 @@
 const express = require('express');
+const multer = require('multer')
 const router = express.Router();
 const Blog = require('../models/Blog');
 const mongoose = require('mongoose');
 const { User } = require('../models/user');
 
-router.post('/:id/comments', async (req,res) => {
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.post('/:id/comments',  async (req,res) => {
     try{
          const blog = await Blog.findById(req.params.id);
          if (!blog) {
@@ -113,13 +117,17 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/',upload.single('image'), async (req, res) => {
+
+    const imageUrl = req.file ? `data:${req.file.minetype};base64,${req.file.buffer.toString('base64')}` : null;
+
     const blog = new Blog({
         title: req.body.title,
         content: req.body.content,
         tags: req.body.tags,
         userId: req.body.userId,
-        author: req.body.author
+        author: req.body.author,
+        imageUrl: imageUrl,
     });
 
     try {
