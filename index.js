@@ -14,6 +14,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json({ limit: '10mb' }));
 app.use(bodyParser.json());
 
 process.env.MONGO_URL = "mongodb+srv://vivekchamyal41:GRclebrT7OHdElnl@cluster0.ci8ozww.mongodb.net/"

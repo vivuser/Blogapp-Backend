@@ -117,9 +117,14 @@ router.get('/user/:userId', async (req, res) => {
     }
 });
 
-router.post('/',upload.single('image'), async (req, res) => {
+router.post('/image', upload.single('file'), (req,res) => {
+    
+    const imageUrl = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
+    res.send({ imageUrl })
+})
 
-    const imageUrl = req.file ? `data:${req.file.minetype};base64,${req.file.buffer.toString('base64')}` : null;
+router.post('/', async (req, res) => {
+
 
     const blog = new Blog({
         title: req.body.title,
@@ -127,7 +132,7 @@ router.post('/',upload.single('image'), async (req, res) => {
         tags: req.body.tags,
         userId: req.body.userId,
         author: req.body.author,
-        imageUrl: imageUrl,
+        imageUrl: req.body.imageUrl,
     });
 
     try {
