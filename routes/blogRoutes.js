@@ -91,7 +91,7 @@ router.post('/:id/comments/:commentId/replies', async (req,res) => {
 router.get('/', async(req, res) => {
     try { 
         const blogs = await Blog.find();
-        res.json(blogs);
+        console.log(res.json(blogs));
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -105,6 +105,26 @@ router.get('/:_id', async(req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+router.post('/blogs/:id/increment-views', async (req, res) => {
+    const blogId = req.params.id;
+    console.log(blogId, 'hh')
+    try{
+        const blog = await Blog.findById(blogId);
+
+        if (!blog) {
+            return res.status(404).json({ error: 'Blog not found'})
+        }
+
+        blog.views += 1;
+        await blog.save();
+
+        res.json({ message: 'Views increment successfully', views: blog.views})
+    } catch(error) {
+        console.error('Error incrementing views', error);
+        res.status(500).json({ error: 'Internal server error'})
+    }
+})
 
 
 
@@ -120,7 +140,7 @@ router.get('/user/:userId', async (req, res) => {
 router.post('/image', upload.single('file'), (req,res) => {
     
     const imageUrl = req.file ? `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}` : null;
-    res.send({ imageUrl })
+    res.send({ imageUrl })  
 })
 
 router.post('/', async (req, res) => {
