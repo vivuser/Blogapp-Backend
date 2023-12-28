@@ -106,7 +106,7 @@ router.get('/:_id', async(req, res) => {
     }
 });
 
-router.post('/blogs/:id/increment-views', async (req, res) => {
+router.post('/:id/increment-views', async (req, res) => {
     const blogId = req.params.id;
     console.log(blogId, 'hh')
     try{
