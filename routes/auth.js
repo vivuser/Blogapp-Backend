@@ -3,17 +3,81 @@ const express = require('express');
 const router = express.Router() 
 const model = require('../models/user')
 const mongoose = require('mongoose')
+const passport = require('passport');
 const User = model.User
 var jwt = require('jsonwebtoken');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const privateKey = fs.readFileSync(path.resolve(__dirname, '../private.key'), 'utf-8')
+const GitHubStrategy = require('passport-github').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 function createUserId() {
     const dataUser = Date.now()
     const useId = Math.floor(Math.random() * 1000)
     return dataUser + useId
 }
+
+router.use(passport.initialize());
+
+passport.use(
+    new GitHubStrategy(
+        {
+            clientID: '6c04c95bbd0476ebef03' ,
+            clientSecret: '575067602e0df41d366a084f9a279952373477f2',
+            callbackURL: 'http://localhost:3000/auth/github/callback'
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            const gitHubUser = await User.findOne({ gitHubId: profile.id });
+            if (gitHubUser) {
+                return done(null, gitHubUser);
+            } else{
+                const newUser = new User({ 
+                    name: profile.displayName,
+                    gitHubId: profile.id
+                });
+                const savedUser = await newUser.save()
+                return done(null, savedUser);
+            }
+        }
+    )
+)
+
+// passport.use(
+//     new GoogleStrategy(
+//         {
+//             clientId: 'x',
+//             clientSecret: 'x',
+//             callbackURL: 'x',
+//         },
+//         async (token, tokenSecret, profile, done) => {
+//             const googleUser = await User.findOne({ googleId: profile.id });
+//             if (googleUser) {
+//                 return done(null, googleUser);
+//             } else {
+//                 const newUser = new User({
+//                     name: profile.displayName,
+//                     googleId: profile.id,
+//                 });
+//                 const savedUser = await newUser.save();
+//                 return done(null, savedUser);
+//             }
+//         }
+//     )
+// )
+
+router.get('/auth/github', passport.authenticate('github'));
+
+router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req,res) => {
+    res.redirect('/')
+});
+
+// router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+// router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req,res) => {
+//     res.redirect('/')
+// })
+
 
 router.post('/signup', async (req,res) => { 
 try  {
