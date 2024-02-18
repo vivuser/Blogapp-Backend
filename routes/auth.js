@@ -24,7 +24,7 @@ passport.use(
     new GitHubStrategy(
         {
             clientID: '6c04c95bbd0476ebef03' ,
-            clientSecret: '575067602e0df41d366a084f9a279952373477f2',
+            clientSecret: 'f98886444aad042ec71d97d6b146d59f7a6d54dc',
             callbackURL: 'http://localhost:3000/auth/github/callback'
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -68,8 +68,14 @@ passport.use(
 
 router.get('/auth/github', passport.authenticate('github'));
 
+
 router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req,res) => {
-    res.redirect('/')
+    try {
+        res.redirect('/')
+    } catch {
+        console.log('isme aagya')
+        console.error(err)
+    }
 });
 
 // router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
