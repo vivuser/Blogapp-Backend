@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const passport = require('passport');
 const User = model.User
 var jwt = require('jsonwebtoken');
+const session = require('express-session');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const privateKey = fs.readFileSync(path.resolve(__dirname, '../private.key'), 'utf-8')
@@ -18,6 +19,7 @@ function createUserId() {
     return dataUser + useId
 }
 
+router.use(session({ secret: 'dsghsagjdhsa', resave: true, saveUninitialized: true }));
 router.use(passport.initialize());
 
 passport.use(
@@ -66,15 +68,15 @@ passport.use(
 //     )
 // )
 
-router.get('/auth/github', passport.authenticate('github'));
+router.get('/github', passport.authenticate('github'));
 
 
-router.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req,res) => {
+router.post('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req,res) => {
     try {
         res.redirect('/')
-    } catch {
-        console.log('isme aagya')
-        console.error(err)
+    } catch (err) {
+        console.error('Error in GitHub callback:', err);
+        res.status(500).json({ error: 'An error occurred during GitHub authentication.' });
     }
 });
 

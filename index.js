@@ -3,12 +3,14 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors')
 const nodemon = require('nodemon')
+const session = require('express-session');
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 const corsOptions = {
-    origin: 'http://localhost:3000', 
+    origin: ['http://localhost:3000','http://localhost:3001'], 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
 };
