@@ -26,7 +26,7 @@ passport.use(
     new GitHubStrategy(
         {
             clientID: '6c04c95bbd0476ebef03' ,
-            clientSecret: 'f98886444aad042ec71d97d6b146d59f7a6d54dc',
+            clientSecret: 'ab6bfa23ffba1496f87c63bf3b213856e6cb48d7',
             callbackURL: 'http://localhost:3000/auth/github/callback'
         },
         async (accessToken, refreshToken, profile, done) => {
@@ -68,13 +68,30 @@ passport.use(
 //     )
 // )
 
-router.get('/github', passport.authenticate('github'));
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
 
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await User.findById(id);
+        done(null, user);
+    } catch (err) {
+        done(err, null);
+    }
+});
+
+router.get('/github', passport.authenticate('github'));
+console.log('tryingbackend')
 
 router.post('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req,res) => {
     try {
+console.log('tryingbackend1')
+
         res.redirect('/')
     } catch (err) {
+console.log('tryingbackend2')
+
         console.error('Error in GitHub callback:', err);
         res.status(500).json({ error: 'An error occurred during GitHub authentication.' });
     }

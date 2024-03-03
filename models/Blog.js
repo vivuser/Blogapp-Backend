@@ -20,6 +20,8 @@
         views: { type: Number, default: 0 },
     });
 
+    blogSchema.index({ title: 'text', content: 'text'})
+
     module.exports = mongoose.model('Blog', blogSchema);
 
     

@@ -97,6 +97,20 @@ router.get('/', async(req, res) => {
     }
 });
 
+router.get('/search', async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query) {
+            return res.status(400).json({ message: 'Search query is required' });
+        }
+        const results = await Blog.find({ $text: { $search: query } });
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ message: error.message})
+    }
+})
+
+
 router.get('/:_id', async(req, res) => {
     try { 
         const blogs = await Blog.find({_id: req.params._id});
