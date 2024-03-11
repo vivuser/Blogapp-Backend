@@ -90,9 +90,18 @@ router.post('/:id/comments/:commentId/replies', async (req,res) => {
 
 router.get('/', async(req, res) => {
     try { 
-        const blogs = await Blog.find().limit(20);
-        console.log(res.json(blogs));
-    } catch (error) {
+        const { query } = req.query;
+
+        let blogs;
+        if (query) {
+            console.log(query, 'hh')
+            blogs = await Blog.find({ $text: { $search: query }}).limit(20)
+        } else{
+         blogs = await Blog.find().limit(20);
+    } 
+    res.json(blogs) 
+    }
+     catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
