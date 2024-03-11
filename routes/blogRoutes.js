@@ -90,15 +90,15 @@ router.post('/:id/comments/:commentId/replies', async (req,res) => {
 
 router.get('/', async(req, res) => {
     try { 
-        const { query } = req.query;
-
+        const { query, page  } = req.query;
+        const itemsPerPage = 20;
+        const currentPage = parseInt(page) || 1;
         let blogs;
         if (query) {
-            console.log(query, 'hh')
-            blogs = await Blog.find({ $text: { $search: query }}).limit(20)
-        } else{
-         blogs = await Blog.find().limit(20);
-    } 
+            blogs = await Blog.find({ $text: { $search: query }})
+            .skip((currentPage -1) * itemsPerPage)
+            .limit(itemsPerPage);
+        } 
     res.json(blogs) 
     }
      catch (error) {
