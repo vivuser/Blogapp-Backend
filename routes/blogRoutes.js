@@ -91,15 +91,32 @@ router.post('/:id/comments/:commentId/replies', async (req,res) => {
 router.get('/', async(req, res) => {
     try { 
         const { query, page  } = req.query;
-        const itemsPerPage = 20;
+        const itemsPerPage = 10;
         const currentPage = parseInt(page) || 1;
         let blogs;
+        let totalBlogs;
         if (query) {
-            blogs = await Blog.find({ $text: { $search: query }})
-            .skip((currentPage -1) * itemsPerPage)
-            .limit(itemsPerPage);
-        } 
-    res.json(blogs) 
+            // Assuming Blog is your Mongoose model
+            blogs = await Blog.find({ $text: { $search: query } })
+                .skip((currentPage - 1) * itemsPerPage)
+                .limit(itemsPerPage);
+                totalBlogs = await Blog.countDocuments({ $text: { $search: query } });
+        } else {
+            // If there's no query, you might want to return something else or handle it differently
+            // For example, you could return all blogs without pagination
+            blogs = await Blog.find({})
+                .skip((currentPage - 1) * itemsPerPage)
+                .limit(itemsPerPage);
+            totalBlogs = await Blog.countDocuments({});
+        }
+
+        const totalPages = Math.ceil(totalBlogs / itemsPerPage);
+
+        // Sending response
+        console.log(blogs)
+        res.setHeader('Content-Type', 'application/json');
+
+        res.send(JSON.stringify({blogs, totalPages}));
     }
      catch (error) {
         res.status(500).json({ message: error.message });
