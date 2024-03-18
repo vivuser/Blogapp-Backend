@@ -96,14 +96,11 @@ router.get('/', async(req, res) => {
         let blogs;
         let totalBlogs;
         if (query) {
-            // Assuming Blog is your Mongoose model
             blogs = await Blog.find({ $text: { $search: query } })
                 .skip((currentPage - 1) * itemsPerPage)
                 .limit(itemsPerPage);
                 totalBlogs = await Blog.countDocuments({ $text: { $search: query } });
         } else {
-            // If there's no query, you might want to return something else or handle it differently
-            // For example, you could return all blogs without pagination
             blogs = await Blog.find({})
                 .skip((currentPage - 1) * itemsPerPage)
                 .limit(itemsPerPage);
@@ -116,25 +113,18 @@ router.get('/', async(req, res) => {
         console.log(blogs)
         res.setHeader('Content-Type', 'application/json');
 
-        res.send(JSON.stringify({blogs, totalPages}));
+        // res.send(JSON.stringify(blogs, totalBlogs));
+        res.send({
+            message: "Get All Blogs",
+            httpStatus: 200,
+            data: { values: blogs, total: totalBlogs}
+        })
     }
      catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-router.get('/search', async (req, res) => {
-    try {
-        const query = req.query.q;
-        if (!query) {
-            return res.status(400).json({ message: 'Search query is required' });
-        }
-        const results = await Blog.find({ $text: { $search: query } });
-        res.json(results);
-    } catch (error) {
-        res.status(500).json({ message: error.message})
-    }
-})
 
 
 router.get('/:_id', async(req, res) => {

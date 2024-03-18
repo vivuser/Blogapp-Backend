@@ -25,8 +25,8 @@ router.use(passport.initialize());
 passport.use(
     new GitHubStrategy(
         {
-            clientID: '6c04c95bbd0476ebef03' ,
-            clientSecret: 'ab6bfa23ffba1496f87c63bf3b213856e6cb48d7',
+            clientID: 'fd63578846ee87eb6134' ,
+            clientSecret: 'fe287c7f1d921df019a20d0b6ed91f7f13d22bdc',
             callbackURL: 'http://localhost:3000/auth/github/callback'
         },
         async (accessToken, refreshToken, profile, done) => {
